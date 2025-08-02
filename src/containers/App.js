@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import CardList from '../components/CardList';
 import SearchBox from '../components/SearchBox';
 import Scroll from '../components/Scroll';
+import ErrorBoundry from '../components/ErrorBaundry.js';
 import './App.css';
 
 class App extends Component {
@@ -24,27 +25,27 @@ class App extends Component {
   };
 
   render() {
-    const { robots, searchField } = this.state;
-    const filteredRobots = robots.filter(robot =>
-      robot.name.toLowerCase().includes(searchField.toLowerCase())
-    );
+  const { robots, searchField } = this.state;
+  const filteredRobots = robots.filter(robot =>
+    robot.name.toLowerCase().includes(searchField.toLowerCase())
+  );
 
-    return (
-      <div className='tc'>
-        <h1 className='f1'>RoboFriends</h1>
-        <SearchBox searchChange={this.onSearchChange} />
-        {
-          robots.length === 0
-            ? <h2 className="loading">Loading Robots...</h2>
-            : (
-              <Scroll>
-                <CardList robots={filteredRobots} />
-              </Scroll>
-            )
-        }
-      </div>
-    );
+  if (!robots.length) {
+    return <h1>Loading</h1>;
   }
+
+  return (
+    <div className='tc'>
+      <h1 className='f1'>RoboFriends</h1>
+      <SearchBox searchChange={this.onSearchChange} />
+      <Scroll>
+        <ErrorBoundry>
+          <CardList robots={filteredRobots} />
+        </ErrorBoundry>
+      </Scroll>
+    </div>
+  );
+}
 }
 
 export default App;
